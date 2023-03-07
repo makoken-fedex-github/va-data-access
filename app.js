@@ -7,7 +7,8 @@ app.get('/', (req, res) => {
 
 app.get('/pickup', (req, res) => {
   const result = {
-    returnCode: 0
+    returnCode: 0,
+    coffee_price_value: 2,55
   };
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
