@@ -10,7 +10,7 @@ app.get('/pickup', (req, res) => {
     returnCode: 0,
     coffee_price_value: 2.55,
     shipmentType: "international",
-    shipmentPostalCode: "1112 XR"
+    shipmentPostalCode: "1001AB"
   };
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
