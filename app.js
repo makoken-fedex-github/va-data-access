@@ -7,11 +7,12 @@ app.get('/', (req, res) => {
 
 app.get('/pickup', (req, res) => {
   const result = {
-    returnCode: 0,
+    accountType: "business",
     coffee_price_value: 2.55,
+    isLoggedIn: true,
+    returnCode: 0,
     shipmentType: "international", // eligible: domestic, return, non-eligible: freight, dangerous
     shipmentPostalCode: "90210", // US postal codes are accepted (regex)
-    isLoggedIn: true
   };
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
