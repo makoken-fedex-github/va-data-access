@@ -6,12 +6,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/pickup', (req, res) => {
-  const result = {
+  
+  let result = {
     accountType: "individual", // options: ["individual", "business"]
     isLoggedIn: true, // boolean
     returnCode: 0,
     shipmentPostalCode: "1000AA", // options: Dutch zip codes (regex: ^\d{4}[A-Za-z]{2}$ )
-    shipmentType: "international", // eligible for pickup: ["domestic", "return", "international"]. uneligible: ["freight", "dangerous"]
+    shipmentType: "international", // eligible for pickup: ["domestic", "return", "international"]. uneligible: ["freight", "dangerous"],
+    reqObjDump: JSON.stringify(req)
   };
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
