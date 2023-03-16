@@ -20,13 +20,13 @@ app.get('/pickup', (req, res) => {
 /*
 * new property in result object called actionRecommendation with default value "VA"
 * new property in result object called isLoggedIn with default value false
-* if the trackingNumber starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
-* if the trackingNumber starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
-* if the trackingNumber starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
+* if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
+* if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
+* if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
 * if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe". 
 */
 app.post('/pickup', (req, res) => {
-    const { trackingNumber, fdx_login } = req.body;
+    const { tracking_number, fdx_login } = req.body;
     let result = {
       accountType: 'individual',
       isLoggedIn: false,
@@ -36,14 +36,14 @@ app.post('/pickup', (req, res) => {
       actionRecommendation: 'VA'
     };
     
-    if (trackingNumber) {
-      if (trackingNumber.startsWith('100')) {
+    if (tracking_number) {
+      if (tracking_number.startsWith('100')) {
         result.shipmentType = 'domestic';
         result.shipmentPostalCode = '3012AM';
-      } else if (trackingNumber.startsWith('200')) {
+      } else if (tracking_number.startsWith('200')) {
         result.shipmentType = 'international';
         result.shipmentPostalCode = '2132LS';
-      } else if (trackingNumber.startsWith('900')) {
+      } else if (tracking_number.startsWith('900')) {
         result.shipmentType = 'dangerous';
         result.actionRecommendation = 'HumanOperator';
       }
