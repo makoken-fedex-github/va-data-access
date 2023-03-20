@@ -61,7 +61,24 @@ app.post('/pickup', (req, res) => {
     res.json(result);
   });
   
-
+app.post('/login', (req, res) => {
+    const { fdx_login } = req.body;
+    let result = {
+      isLoggedIn: false,
+      returnCode: 0,
+    };
+    
+    if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+      result.isLoggedIn = true;
+      result.userDetails = {
+        firstName: 'John',
+        lastName: 'Doe'
+      };
+    }
+  
+    res.setHeader('Content-Type', 'application/json');
+    res.json(result);
+  });
 
 
 const PORT = process.env.PORT || 3000;
