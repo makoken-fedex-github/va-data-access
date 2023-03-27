@@ -26,7 +26,7 @@ app.get('/pickup', (req, res) => {
 * if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe". 
 */
 app.post('/pickup', (req, res) => {
-    const { tracking_number, fdx_login } = req.body;
+    const { tracking_number, fdx_login,from_address,to_address,weight } = req.body;
     let result = {
       accountType: 'individual',
       isLoggedIn: false,
@@ -75,6 +75,17 @@ app.post('/login', (req, res) => {
         lastName: 'Doe'
       };
     }
+   if (from_address){
+     result.from_address = from_address+"--received";
+   }
+  
+   if (to_address){
+     result.from_address = to_address+"--received";
+   }
+  
+   if (weight){
+     result.from_address = weight+"--received";
+   }
   
     res.setHeader('Content-Type', 'application/json');
     res.json(result);
