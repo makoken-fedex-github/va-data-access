@@ -61,11 +61,11 @@ app.post('/pickup', (req, res) => {
    }
   
    if (to_address){
-     result.from_address = to_address+"--received";
+     result.to_address = to_address+"--received";
    }
   
    if (weight){
-     result.from_address = weight+"--received";
+     result.weight = weight+"--received";
    }
   
     res.setHeader('Content-Type', 'application/json');
