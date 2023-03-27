@@ -57,15 +57,15 @@ app.post('/pickup', (req, res) => {
       };
     }
    if (from_address){
-     result.from_address = from_address+"--received";
+     result.from_address_verify = from_address+"--received";
    }
   
    if (to_address){
-     result.to_address = to_address+"--received";
+     result.to_address_verify = to_address+"--received";
    }
   
    if (weight){
-     result.weight = weight+"--received";
+     result.weight_verify = weight+"--received";
    }
   
     res.setHeader('Content-Type', 'application/json');
