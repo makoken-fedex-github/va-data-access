@@ -56,6 +56,17 @@ app.post('/pickup', (req, res) => {
         lastName: 'Doe'
       };
     }
+   if (from_address){
+     result.from_address = from_address+"--received";
+   }
+  
+   if (to_address){
+     result.from_address = to_address+"--received";
+   }
+  
+   if (weight){
+     result.from_address = weight+"--received";
+   }
   
     res.setHeader('Content-Type', 'application/json');
     res.json(result);
@@ -75,17 +86,7 @@ app.post('/login', (req, res) => {
         lastName: 'Doe'
       };
     }
-   if (from_address){
-     result.from_address = from_address+"--received";
-   }
   
-   if (to_address){
-     result.from_address = to_address+"--received";
-   }
-  
-   if (weight){
-     result.from_address = weight+"--received";
-   }
   
     res.setHeader('Content-Type', 'application/json');
     res.json(result);
