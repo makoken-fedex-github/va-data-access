@@ -9,7 +9,7 @@ function sendEmail(subject, body) {
     service: 'gmail',
     auth: {
       user: 'va.nuance.email.sender@gmail.com',
-      pass: env.email_password
+      pass: process.env.email_password
     }
   });
 
