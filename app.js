@@ -19,7 +19,7 @@ function sendEmail(subject, body) {
     subject: subject,
     text: body
   };
-
+  console.log("sending email via gmail user email is va.nuance.email.sender@gmail.com and password is "+process.env.email_password);
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
@@ -96,6 +96,8 @@ app.post('/pickup', (req, res) => {
   }
   if (from_address) {
     result.from_address_verify = from_address + "--received";
+    console.log("sending email... from address is set. "+ from_address);
+    
     sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
   }
 
