@@ -4,29 +4,29 @@ var nodemailer = require('nodemailer');
 const express = require('express');
 const app = express();
 
-function sendEmail(subject,body){
+function sendEmail(subject, body) {
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'youremail@gmail.com',
-      pass: 'yourpassword'
+      user: 'va.nuance.email.sender@gmail.com',
+      pass: env.email_password
     }
   });
 
   var mailOptions = {
-    from: 'youremail@gmail.com',
-    to: 'myfriend@yahoo.com',
+    from: 'va.nuance.email.sender@gmail.com',
+    to: 'bfb0a43e.myfedex.onmicrosoft.com@amer.teams.ms',
     subject: subject,
     text: body
   };
 
-  transporter.sendMail(mailOptions, function(error, info){
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
     } else {
       console.log('Email sent: ' + info.response);
     }
-  }); 
+  });
 }
 
 app.use(express.json());
@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/pickup', (req, res) => {
-  
+
   let result = {
     accountType: "individual", // options: ["individual", "business"]
     isLoggedIn: true, // boolean
@@ -55,71 +55,73 @@ app.get('/pickup', (req, res) => {
 * if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe". 
 */
 app.post('/pickup', (req, res) => {
-    const { tracking_number, fdx_login,from_address,to_address,weight } = req.body;
-    let result = {
-      accountType: 'individual',
-      isLoggedIn: false,
-      returnCode: 0,
-      shipmentPostalCode: '1000AA',
-      shipmentType: 'international',
-      actionRecommendation: 'VA'
+  const { tracking_number, fdx_login, from_address, to_address, weight } = req.body;
+  let result = {
+    accountType: 'individual',
+    isLoggedIn: false,
+    returnCode: 0,
+    shipmentPostalCode: '1000AA',
+    shipmentType: 'international',
+    actionRecommendation: 'VA'
+  };
+
+  if (tracking_number) {
+    if (tracking_number.startsWith('100')) {
+      result.shipmentType = 'domestic';
+      result.shipmentPostalCode = '3012AM';
+    } else if (tracking_number.startsWith('200')) {
+      result.shipmentType = 'international';
+      result.shipmentPostalCode = '2132LS';
+    } else if (tracking_number.startsWith('900')) {
+      result.shipmentType = 'dangerous';
+      result.actionRecommendation = 'HumanOperator';
+    }
+  }
+
+  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      firstName: 'John',
+      lastName: 'Doe'
     };
-    
-    if (tracking_number) {
-      if (tracking_number.startsWith('100')) {
-        result.shipmentType = 'domestic';
-        result.shipmentPostalCode = '3012AM';
-      } else if (tracking_number.startsWith('200')) {
-        result.shipmentType = 'international';
-        result.shipmentPostalCode = '2132LS';
-      } else if (tracking_number.startsWith('900')) {
-        result.shipmentType = 'dangerous';
-        result.actionRecommendation = 'HumanOperator';
-      }
-    }
-  
-    if (fdx_login && fdx_login.startsWith('ssodrt-')) {
-      result.isLoggedIn = true;
-      result.userDetails = {
-        firstName: 'John',
-        lastName: 'Doe'
-      };
-    }
-   if (from_address){
-     result.from_address_verify = from_address+"--received";
-   }
-  
-   if (to_address){
-     result.to_address_verify = to_address+"--received";
-   }
-  
-   if (weight){
-     result.weight_verify = weight+"--received";
-   }
-  
-    res.setHeader('Content-Type', 'application/json');
-    res.json(result);
-  });
-  
+  }
+
+
+  if (to_address) {
+    result.to_address_verify = to_address + "--received";
+  }
+
+  if (weight) {
+    result.weight_verify = weight + "--received";
+  }
+  if (from_address) {
+    result.from_address_verify = from_address + "--received";
+    sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  res.json(result);
+});
+
 app.post('/login', (req, res) => {
-    const { fdx_login } = req.body;
-    let result = {
-      isLoggedIn: false,
-      returnCode: 0,
+  const { fdx_login } = req.body;
+  let result = {
+    isLoggedIn: false,
+    returnCode: 0,
+  };
+
+  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      firstName: 'John',
+      lastName: 'Doe'
     };
-    
-    if (fdx_login && fdx_login.startsWith('ssodrt-')) {
-      result.isLoggedIn = true;
-      result.userDetails = {
-        firstName: 'John',
-        lastName: 'Doe'
-      };
-    }
-  
-  
-    res.setHeader('Content-Type', 'application/json');
-    res.json(result);
-  });
+  }
+
+
+  res.setHeader('Content-Type', 'application/json');
+  res.json(result);
+});
 
 
 const PORT = process.env.PORT || 3000;
