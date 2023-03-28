@@ -20,13 +20,14 @@ function sendEmail(subject, body) {
     text: body
   };
   console.log("sending email via gmail user email is va.nuance.email.sender@gmail.com and password is "+process.env.email_password);
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
+  console.log("email dump"+JSON.stringify(mailOptions));
+  // transporter.sendMail(mailOptions, function (error, info) {
+  //   if (error) {
+  //     console.log(error);
+  //   } else {
+  //     console.log('Email sent: ' + info.response);
+  //   }
+  // });
 }
 
 app.use(express.json());
