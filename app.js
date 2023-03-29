@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 
 app.get('/pickup', (req, res) => {
 
-  let cookies = req.cookies || "No cookies present";
+  let cookies = req.headers.cookie || "No cookies present";
   let result = {
     accountType: "individual", // options: ["individual", "business"]
     isLoggedIn: true, // boolean
