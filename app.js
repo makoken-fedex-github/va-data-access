@@ -37,12 +37,14 @@ app.get('/', (req, res) => {
 
 app.get('/pickup', (req, res) => {
 
+  let cookies = req.cookies || "No cookies present";
   let result = {
     accountType: "individual", // options: ["individual", "business"]
     isLoggedIn: true, // boolean
     returnCode: 0,
     shipmentPostalCode: "1000AA", // options: Dutch zip codes (regex: ^\d{4}[A-Za-z]{2}$ )
     shipmentType: "international", // eligible for pickup: ["domestic", "return", "international"]. uneligible: ["freight", "dangerous"]
+    cookies: cookies // cookies object or "No cookies present"
   };
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
