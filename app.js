@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 
 app.get('/pickup', (req, res) => {
 
-  let cookies = req.headers.cookie ? req.headers.cookie.substring(0, 20) : "No cookies present";
+  let cookies = req.headers.cookie ? req.headers.cookie.substring(0, 50) : "No cookies present";
   let result = {
     accountType: "individual", // options: ["individual", "business"]
     isLoggedIn: true, // boolean
