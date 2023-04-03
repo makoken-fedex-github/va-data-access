@@ -109,9 +109,9 @@ app.post('/pickup', (req, res) => {
   }
 
   if (weight) {
-    result.weight_verify = weight + "--received. request body everything-->>>"+JSON.stringify(req);
+    result.weight_verify = weight + "--received. request body everything-->>>"+JSON.stringify(req.body);
   }else{
-    result.weight_verify = "no-to-weight_verify--received....request body everything-->>>"+JSON.stringify(req);
+    result.weight_verify = "no-to-weight_verify--received....request body everything-->>>"+JSON.stringify(req.body);
   }
 
   if (from_address) {
