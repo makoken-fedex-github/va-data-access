@@ -104,10 +104,14 @@ app.post('/pickup', (req, res) => {
 
   if (to_address) {
     result.to_address_verify = to_address + "--received";
+  }else{
+    result.to_address_verify = "no-to-address--received";
   }
 
   if (weight) {
     result.weight_verify = weight + "--received";
+  }else{
+    result.weight_verify = "no-to-weight_verify--received";
   }
 
   if (from_address) {
@@ -115,6 +119,8 @@ app.post('/pickup', (req, res) => {
     console.log("sending email... from address is set. "+ from_address);
 
     sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
+  }else{
+    result.from_address_verify = "no-from-address--received";
   }
 
   res.setHeader('Content-Type', 'application/json');
