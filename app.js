@@ -36,7 +36,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/pickup', (req, res) => {
-
   let cookies = req.headers.cookie ? req.headers.cookie.substring(0, 50) : "No cookies present";
   let result = {
     accountType: "individual", // options: ["individual", "business"]
@@ -55,29 +54,41 @@ app.get('/pickup', (req, res) => {
 * if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
 * if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
 * if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
-* if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe". 
+* if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe".
 */
 app.post('/pickup', (req, res) => {
   const { tracking_number, fdx_login, from_address, to_address, weight } = req.body;
   let result = {
     accountType: 'individual',
+    actionRecommendation: 'VA',
     isLoggedIn: false,
     returnCode: 0,
+    shipmentAddressTo: 'Fred Smithstraat 88, Rotterdam, Netherlands',
+    shipmentAddressFrom: '',
+    shipmentAmount: 0, // amount of packages
     shipmentPostalCode: '1000AA',
     shipmentType: 'international',
-    actionRecommendation: 'VA'
   };
 
   if (tracking_number) {
     if (tracking_number.startsWith('100')) {
-      result.shipmentType = 'domestic';
+      result.shipmentAddressTo = 'Calgary, Canada';
+      result.shipmentAmount = 3;
+      result.shipmentInstructions = 'Use video doorbell on the left'
       result.shipmentPostalCode = '3012AM';
+      result.shipmentType = 'domestic';
+
     } else if (tracking_number.startsWith('200')) {
-      result.shipmentType = 'international';
+      result.accountType = 'business';
+      result.shipmentAmount = 1;
       result.shipmentPostalCode = '2132LS';
+      result.shipmentType = 'international';
+
     } else if (tracking_number.startsWith('900')) {
-      result.shipmentType = 'dangerous';
       result.actionRecommendation = 'HumanOperator';
+      result.shipmentAmount = 1;
+      result.shipmentType = 'dangerous';
+
     }
   }
 
@@ -85,10 +96,11 @@ app.post('/pickup', (req, res) => {
     result.isLoggedIn = true;
     result.userDetails = {
       firstName: 'John',
-      lastName: 'Doe'
+      lastName: 'Doe',
+      phoneNumber: '+31612345678',
+      email: 'john.doe@mail.com'
     };
   }
-
 
   if (to_address) {
     result.to_address_verify = to_address + "--received";
@@ -97,10 +109,11 @@ app.post('/pickup', (req, res) => {
   if (weight) {
     result.weight_verify = weight + "--received";
   }
+
   if (from_address) {
     result.from_address_verify = from_address + "--received";
     console.log("sending email... from address is set. "+ from_address);
-    
+
     sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
   }
 
@@ -123,15 +136,11 @@ app.post('/login', (req, res) => {
     };
   }
 
-
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });
-
-
