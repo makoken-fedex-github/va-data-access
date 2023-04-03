@@ -111,7 +111,7 @@ app.post('/pickup', (req, res) => {
   if (weight) {
     result.weight_verify = weight + "--received";
   }else{
-    result.weight_verify = "no-to-weight_verify--received";
+    result.weight_verify = "no-to-weight_verify--received....request body -->>>"+JSON.stringify(req.body);
   }
 
   if (from_address) {
