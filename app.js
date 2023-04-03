@@ -73,9 +73,9 @@ app.post('/pickup', (req, res) => {
 
   if (tracking_number) {
     if (tracking_number.startsWith('100')) {
-      result.shipmentAddressTo = 'Calgary, Canada';
+      result.shipmentAddressTo = 'Calgary';
       result.shipmentAmount = 3;
-      result.shipmentInstructions = 'Use video doorbell on the left'
+      result.shipmentInstructions = 'Use video doorbell on the left' // not functional yet in Mix
       result.shipmentPostalCode = '3012AM';
       result.shipmentType = 'domestic';
 
@@ -89,7 +89,6 @@ app.post('/pickup', (req, res) => {
       result.actionRecommendation = 'HumanOperator';
       result.shipmentAmount = 1;
       result.shipmentType = 'dangerous';
-
     }
   }
 
@@ -98,8 +97,6 @@ app.post('/pickup', (req, res) => {
     result.userDetails = {
       firstName: 'John',
       lastName: 'Doe',
-      phoneNumber: '+31612345678',
-      email: 'john.doe@mail.com'
     };
   }
 
@@ -138,8 +135,10 @@ app.post('/login', (req, res) => {
   if (fdx_login && fdx_login.startsWith('ssodrt-')) {
     result.isLoggedIn = true;
     result.userDetails = {
+      email: 'john.doe@mail.com',
       firstName: 'John',
-      lastName: 'Doe'
+      lastName: 'Doe',
+      phoneNumber: '+31612345678'
     };
   }
 
