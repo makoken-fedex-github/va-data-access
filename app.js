@@ -109,7 +109,7 @@ app.post('/pickup', (req, res) => {
   }
 
   if (weight) {
-    result.weight_verify = weight + "--received";
+    result.weight_verify = weight + "--received. request body everything-->>>"+JSON.stringify(req);
   }else{
     result.weight_verify = "no-to-weight_verify--received....request body everything-->>>"+JSON.stringify(req);
   }
@@ -118,7 +118,7 @@ app.post('/pickup', (req, res) => {
     result.from_address_verify = from_address + "--received";
     console.log("sending email... from address is set. "+ from_address);
 
-    sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
+    //sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
   }else{
     result.from_address_verify = "no-from-address--received";
   }
