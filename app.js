@@ -1,6 +1,71 @@
 var nodemailer = require('nodemailer');
+const axios = require('axios');
+const Sib = require('sib-api-v3-sdk')
+const client = Sib.ApiClient.instanceconst 
+apiKey = client.authentications['api-key']
+apiKey.apiKey = process.env.API_KEY
 const express = require('express');
 const app = express();
+function sendTeamsNotification(subject,body){
+  try{
+      // Replace <webhook-url> with the actual webhook URL provided by Teams
+    const webhookUrl = 'https://myfedex.webhook.office.com/webhookb2/9955e2de-3d21-437c-99c7-0b15657457c1@b945c813-dce6-41f8-8457-5a12c2fe15bf/IncomingWebhook/ad3b52249e764827952bd8281193b6ce/50fe584c-09e5-4b10-b92b-ff8d56c63bcd';
+    // Define the message payload
+    const payload = {
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "themeColor": "0072C6",
+      "title": "Your Pickup is confirmed",
+      "text":"Your Pickup is confirmed",
+      "summary": "Your pickup is confirmed for your package.",
+      "sections": [
+        {
+          "activityTitle": "Pickup Confirmation",
+          "activitySubtitle": "Sent by DCC - FedEx",
+          "activityImage": "https://www.fedex.com/content/dam/fedex-com/logos/logo.png"
+        }
+      ]
+    };
+    // Send a POST request to the webhook URL with the message payload
+    axios.post(webhookUrl, payload)
+      .then(response => {
+        console.log('Message sent:', response.data);
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+      });
+  }catch(ex){
+    console.error("something went wrong when sending teams notifications..."+ex.message);
+  }
+}
+function sendNotificationEmail(subject,body){
+  try {
+  const client = Sib.ApiClient.instance
+  const apiKey = client.authentications['api-key']
+  apiKey.apiKey = process.env.API_KEY
+  const tranEmailApi = new Sib.TransactionalEmailsApi()
+  const sender = {
+      email: 'makoken.parkmobile@gmail.com',
+      name: 'Test Email',
+  }
+  const receivers = [
+      {
+          email: 'ali.koeken.osv@fedex.com,makoken+va+notification@gmail.com',
+      },
+  ]
+  tranEmailApi
+      .sendTransacEmail({
+          sender,
+          to: receivers,
+          subject: subject,
+          textContent: body
+      })
+      .then(console.log)
+      .catch(console.log)
+  } catch (error) {
+    console.error("something went wrong when sending email notifications..."+ex.message);
+  }
+}
 
 /**
  * GENERATE SHIPMENT NUMBER
@@ -204,17 +269,22 @@ app.post('/confirmpickup', (req, res) => {
   const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount } = req.body;
   let pickupDate = generatePickupDate();
   let shipmentNumber= generateShipmentNumber();
+  const confirmationMessage = `🚚 Great news! Your shipment (${trackingNumber}), consisting of ${shipmentAmount} packages is scheduled for pickup on ${pickupDate} in ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Please check your email inbox to confirm or change pickup details.`;
   const result = {
     actionRecommendation: 'VA',
     trackingNr: trackingNumber,
     addressFrom: shipmentAddressFrom,
     addressTo: shipmentAddressTo,
     amount: shipmentAmount,
-    confirmationMessage: `🚚 Great news! Your shipment (${trackingNumber}), consisting of ${shipmentAmount} packages is scheduled for pickup on ${pickupDate} in ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Please check your email inbox to confirm or change pickup details.`,
+    confirmationMessage: confirmationMessage,
     pickupDate: pickupDate,
     returnCode: 0,
     shipmentNumber: shipmentNumber,
   };
+
+  const notificationSubject =  `Pickup Confirmation for tracking number ${trackingNumber}`;
+  sendNotificationEmail(notificationSubject,confirmationMessage)
+  sendTeamsNotification(notificationSubject,confirmationMessage)
 
   res.json(result);
 });
