@@ -114,7 +114,7 @@ app.get('/pickup', (req, res) => {
  */
 app.post('/pickup', (req, res) => {
   console.log("req.body is::: "+req.body);
-  const { tracking_number, fdx_login, from_address, to_address, weight } = req.body;
+  const { trackingNumber, fdx_login, from_address, to_address, weight } = req.body;
   let result = {
     accountType: 'individual',
     actionRecommendation: 'VA',
@@ -126,21 +126,21 @@ app.post('/pickup', (req, res) => {
     shipmentType: 'international',
   };
 
-  if (tracking_number) {
-    if (tracking_number.startsWith('100')) {
+  if (trackingNumber) {
+    if (trackingNumber.startsWith('100')) {
       result.shipmentAddressTo = 'Calgary';
       result.shipmentAmount = 3;
       result.shipmentInstructions = 'Use video doorbell on the left' // not functional yet in Mix
       result.shipmentPostalCode = '3012AM';
       result.shipmentType = 'domestic';
 
-    } else if (tracking_number.startsWith('200')) {
+    } else if (trackingNumber.startsWith('200')) {
       result.accountType = 'business';
       result.shipmentAmount = 1;
       result.shipmentPostalCode = '2132LS';
       result.shipmentType = 'international';
 
-    } else if (tracking_number.startsWith('900')) {
+    } else if (trackingNumber.startsWith('900')) {
       result.actionRecommendation = 'HumanOperator';
       result.shipmentAmount = 1;
       result.shipmentType = 'dangerous';
