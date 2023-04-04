@@ -114,7 +114,7 @@ app.get('/pickup', (req, res) => {
  */
 app.post('/pickup', (req, res) => {
   console.log("req.body is::: "+req.body);
-  const { trackingNumber, fdx_login, from_address, to_address, weight } = req.body;
+  const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentWeight, fdx_login } = req.body;
   let result = {
     accountType: 'individual',
     actionRecommendation: 'VA',
@@ -147,10 +147,10 @@ app.post('/pickup', (req, res) => {
     }
   }
 
-  if (to_address) {
-    result.to_address_verify = to_address + "--received";
+  if (shipmentAddressTo) {
+    result.shipmentAddressTo_verify = shipmentAddressTo + "--received";
   }else{
-    result.to_address_verify = "no-to-address--received";
+    result.shipmentAddressTo_verify = "no-to-address--received";
   }
 
   if (weight) {
@@ -159,12 +159,12 @@ app.post('/pickup', (req, res) => {
     result.weight_verify = "no-to-weight_verify--received....request body everything-->>>"+JSON.stringify(req.body);
   }
 
-  if (from_address) {
-    result.from_address_verify = from_address + "--received";
-    console.log("sending email... from address is set. "+ from_address);
+  if (shipmentAddressFrom) {
+    result.from_address_verify = shipmentAddressFrom + "--received";
+    console.log("sending email... from address is set. "+ shipmentAddressFrom);
 
     //sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
-  }else{
+  } else {
     result.from_address_verify = "no-from-address--received";
   }
 
