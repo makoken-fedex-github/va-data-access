@@ -128,20 +128,20 @@ app.get('/pickup', (req, res) => {
  *
  * new property in result object called actionRecommendation with default value "VA"
  * new property in result object called isLoggedIn with default value false
- * if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
- * if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
- * if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
+ * if the trackingNumber starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
+ * if the trackingNumber starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
+ * if the trackingNumber starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
  * if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe".
  */
 app.post('/pickup', (req, res) => {
-  console.log("req.body is::: "+req.body);
+  // console.log("req.body is::: "+req.body);
   const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentWeight, fdx_login } = req.body;
   let result = {
     accountType: 'individual',
     actionRecommendation: 'VA',
     returnCode: 0,
     shipmentAddressTo: '',
-    shipmentAddressFrom: 'Rotterdam',
+    shipmentAddressFrom: '',
     shipmentAmount: 0, // amount of packages
     shipmentPostalCode: '1000AA',
     shipmentType: 'international',
@@ -149,10 +149,10 @@ app.post('/pickup', (req, res) => {
 
   if (trackingNumber) {
     if (trackingNumber.startsWith('100')) {
-      result.shipmentAddressTo = 'Calgary';
+      result.shipmentAddressFrom = 'Amsterdam';
       result.shipmentAmount = 3;
       result.shipmentInstructions = 'Use video doorbell on the left' // not functional yet in Mix
-      result.shipmentPostalCode = '3012AM';
+      result.shipmentPostalCode = '1051GM';
       result.shipmentType = 'domestic';
 
     } else if (trackingNumber.startsWith('200')) {
@@ -168,14 +168,15 @@ app.post('/pickup', (req, res) => {
     }
   }
 
+  /*
   if (shipmentAddressTo) {
     result.shipmentAddressTo_verify = shipmentAddressTo + "--received";
   }else{
     result.shipmentAddressTo_verify = "no-to-address--received";
   }
 
-  if (weight) {
-    result.weight_verify = weight + "--received. request body everything-->>>"+JSON.stringify(req.body);
+  if (shipmentWeight) {
+    result.weight_verify = shipmentWeight+ "--received. request body everything-->>>"+JSON.stringify(req.body);
   }else{
     result.weight_verify = "no-to-weight_verify--received....request body everything-->>>"+JSON.stringify(req.body);
   }
@@ -187,7 +188,7 @@ app.post('/pickup', (req, res) => {
     //sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
   } else {
     result.from_address_verify = "no-from-address--received";
-  }
+  }*/
 
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
@@ -199,15 +200,19 @@ app.post('/pickup', (req, res) => {
  * Pickup confirmation, processes the pickup data into a sentence.
  */
 app.post('/confirmpickup', (req, res) => {
-  const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount,fdx_login } = req.body;
+  const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount } = req.body;
   let pickupDate = generatePickupDate();
   let shipmentNumber= generateShipmentNumber();
   const result = {
+    actionRecommendation: 'VA',
+    trackingNr: trackingNumber
+    addressFrom: shipmentAddressFrom,
+    addressTo: shipmentAddressTo,
+    amount: shipmentAmount,
+    confirmationMessage: `Great news! Your shipment (${trackingNumber}) is scheduled for pickup on ${pickupDate} in ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Check your email inbox to confirm or change pickup details.`,
+    pickupDate: pickupDate,
     returnCode: 0,
     shipmentNumber: shipmentNumber,
-    pickupDate: pickupDate,
-    confirmationMessage: `Great news! Your shipment (${trackingNumber}) is scheduled for pickup on ${pickupDate} in  ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Check your email inbox to confirm or change pickup details.`,
-    actionRecommendation: 'VA'
   };
 
   res.json(result);
