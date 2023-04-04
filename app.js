@@ -77,17 +77,8 @@ app.post('/confirmpickup', (req, res) => {
     shipmentNumber: shipmentNumber,
     pickupDate: pickupDate,
     confirmationMessage: `Your pickup is scheduled for tracking number ${trackingNumber}, origin shipping address ${shipmentAddressFrom} on its way to ${shipmentAddressTo}. It will be picked up on ${pickupDate} and your shipment number is ${shipmentNumber}. Thanks for working with us.`,
-    actionRecommendation: 'VA',
-    isLoggedIn: false,
+    actionRecommendation: 'VA'
   };
-
-  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
-    result.isLoggedIn = true;
-    result.userDetails = {
-      firstName: 'John',
-      lastName: 'Doe',
-    };
-  }
 
   res.json(result);
 });
