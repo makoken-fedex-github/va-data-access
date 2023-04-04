@@ -65,21 +65,42 @@ app.get('/', (req, res) => {
 
 
 /**
- * CONFIRM PICKUP
- * Pickup confirmation, processes the pickup data into a sentence.
+ * LOGIN
  */
-app.post('/confirmpickup', (req, res) => {
-  const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount,fdx_login } = req.body;
-  let pickupDate = generatePickupDate();
-  let shipmentNumber= generateShipmentNumber();
-  const result = {
+app.post('/login', (req, res) => {
+  const { fdx_login } = req.body;
+  let result = {
+    isLoggedIn: false,
     returnCode: 0,
-    shipmentNumber: shipmentNumber,
-    pickupDate: pickupDate,
-    confirmationMessage: `Your pickup is scheduled for tracking number ${trackingNumber}, origin shipping address ${shipmentAddressFrom} on its way to ${shipmentAddressTo}. It will be picked up on ${pickupDate} and your shipment number is ${shipmentNumber}. Thanks for working with us.`,
-    actionRecommendation: 'VA'
   };
 
+  if (fdx_login && fdx_login.startsWith('ssodrt-88')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      email: 'jane.doe@mail.com',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      phoneNumber: '+31687654321'
+    };
+  } else if (fdx_login && fdx_login.startsWith('ssodrt-1337')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      email: 'fred.smith@fedex.com',
+      firstName: 'Fred',
+      lastName: 'Smith',
+      phoneNumber: '+1123456789'
+    };
+  } else if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      email: 'john.doe@mail.com',
+      firstName: 'John',
+      lastName: 'Doe',
+      phoneNumber: '+31612345678'
+    };
+  }
+
+  res.setHeader('Content-Type', 'application/json');
   res.json(result);
 });
 
@@ -174,44 +195,24 @@ app.post('/pickup', (req, res) => {
 
 
 /**
- * LOGIN
+ * CONFIRM PICKUP
+ * Pickup confirmation, processes the pickup data into a sentence.
  */
-app.post('/login', (req, res) => {
-  const { fdx_login } = req.body;
-  let result = {
-    isLoggedIn: false,
+app.post('/confirmpickup', (req, res) => {
+  const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount,fdx_login } = req.body;
+  let pickupDate = generatePickupDate();
+  let shipmentNumber= generateShipmentNumber();
+  const result = {
     returnCode: 0,
+    shipmentNumber: shipmentNumber,
+    pickupDate: pickupDate,
+    confirmationMessage: `Great news! Your shipment (${trackingNumber}) is scheduled for pickup on ${pickupDate} in  ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Check your email inbox to confirm or change pickup details.`,
+    actionRecommendation: 'VA'
   };
 
-  if (fdx_login && fdx_login.startsWith('ssodrt-88')) {
-    result.isLoggedIn = true;
-    result.userDetails = {
-      email: 'jane.doe@mail.com',
-      firstName: 'Jane',
-      lastName: 'Doe',
-      phoneNumber: '+31687654321'
-    };
-  } else if (fdx_login && fdx_login.startsWith('ssodrt-1337')) {
-    result.isLoggedIn = true;
-    result.userDetails = {
-      email: 'fred.smith@fedex.com',
-      firstName: 'Fred',
-      lastName: 'Smith',
-      phoneNumber: '+1123456789'
-    };
-  } else if (fdx_login && fdx_login.startsWith('ssodrt-')) {
-    result.isLoggedIn = true;
-    result.userDetails = {
-      email: 'john.doe@mail.com',
-      firstName: 'John',
-      lastName: 'Doe',
-      phoneNumber: '+31612345678'
-    };
-  }
-
-  res.setHeader('Content-Type', 'application/json');
   res.json(result);
 });
+
 
 
 const PORT = process.env.PORT || 3000;
