@@ -183,7 +183,23 @@ app.post('/login', (req, res) => {
     returnCode: 0,
   };
 
-  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+  if (fdx_login && fdx_login.startsWith('ssodrt-88')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      email: 'jane.doe@mail.com',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      phoneNumber: '+31687654321'
+    };
+  } else if (fdx_login && fdx_login.startsWith('ssodrt-1337')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      email: 'fred.smith@fedex.com',
+      firstName: 'Fred',
+      lastName: 'Smith',
+      phoneNumber: '+1123456789'
+    };
+  } else if (fdx_login && fdx_login.startsWith('ssodrt-')) {
     result.isLoggedIn = true;
     result.userDetails = {
       email: 'john.doe@mail.com',
