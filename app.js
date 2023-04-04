@@ -1,11 +1,23 @@
 var nodemailer = require('nodemailer');
 
+
 const express = require('express');
 const app = express();
 
-/**
- * SEND EMAIL
- */
+function generateShipmentNumber() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let shipmentNumber = '';
+  for (let i = 0; i < 16; i++) {
+    shipmentNumber += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return shipmentNumber;
+}
+
+function generatePickupDate() {
+  const currentDate = new Date();
+  const pickupDate = new Date(currentDate.getTime() + Math.floor(Math.random() * 3 + 1) * 24 * 60 * 60 * 1000);
+  return pickupDate.toISOString().slice(0, 10);
+}
 function sendEmail(subject, body) {
   var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -32,18 +44,32 @@ function sendEmail(subject, body) {
   // });
 }
 
-/**
- * HELLO WORLD
- */
 app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
+app.post('/confirmpickup', (req, res) => {
+  const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount,fdx_login } = req.body;
+  const result = {
+    returnCode: 0,
+    shipmentNumber: generateShipmentNumber(),
+    pickupDate: generatePickupDate(),
+    confirmationMessage: `Your pickup is scheduled for tracking number ${trackingNumber}, origin shipping address ${shipmentAddressFrom} on its way to ${shipmentAddressTo}. It will be picked up on ${pickupDate} and your shipment number is ${shipmentNumber}. Thanks for working with us.`,
+    actionRecommendation: 'VA',
+    isLoggedIn: false,
+  };
 
+  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      firstName: 'John',
+      lastName: 'Doe',
+    };
+  }
 
-/**
- * PICKUP (GET)
- */
+  res.json(result);
+});
+
 app.get('/pickup', (req, res) => {
   let cookies = req.headers.cookie ? req.headers.cookie.substring(0, 50) : "No cookies present";
   let result = {
@@ -57,18 +83,14 @@ app.get('/pickup', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
 });
-
-
-/**
- * PICKUP (POST)
- *
- * new property in result object called actionRecommendation with default value "VA"
- * new property in result object called isLoggedIn with default value false
- * if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
- * if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
- * if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
- * if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe".
- */
+/*
+* new property in result object called actionRecommendation with default value "VA"
+* new property in result object called isLoggedIn with default value false
+* if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
+* if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
+* if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
+* if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe".
+*/
 app.post('/pickup', (req, res) => {
   console.log("req.body is::: "+req.body);
   const { tracking_number, fdx_login, from_address, to_address, weight } = req.body;
@@ -138,10 +160,6 @@ app.post('/pickup', (req, res) => {
   res.json(result);
 });
 
-
-/**
- * LOGIN
- */
 app.post('/login', (req, res) => {
   const { fdx_login } = req.body;
   let result = {
