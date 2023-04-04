@@ -1,9 +1,11 @@
 var nodemailer = require('nodemailer');
 
-
 const express = require('express');
 const app = express();
 
+/**
+ * SEND EMAIL
+ */
 function sendEmail(subject, body) {
   var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -30,11 +32,18 @@ function sendEmail(subject, body) {
   // });
 }
 
+/**
+ * HELLO WORLD
+ */
 app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
 
+
+/**
+ * PICKUP (GET)
+ */
 app.get('/pickup', (req, res) => {
   let cookies = req.headers.cookie ? req.headers.cookie.substring(0, 50) : "No cookies present";
   let result = {
@@ -48,14 +57,18 @@ app.get('/pickup', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.json(result);
 });
-/*
-* new property in result object called actionRecommendation with default value "VA"
-* new property in result object called isLoggedIn with default value false
-* if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
-* if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
-* if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
-* if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe".
-*/
+
+
+/**
+ * PICKUP (POST)
+ *
+ * new property in result object called actionRecommendation with default value "VA"
+ * new property in result object called isLoggedIn with default value false
+ * if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
+ * if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
+ * if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
+ * if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe".
+ */
 app.post('/pickup', (req, res) => {
   console.log("req.body is::: "+req.body);
   const { tracking_number, fdx_login, from_address, to_address, weight } = req.body;
@@ -125,6 +138,10 @@ app.post('/pickup', (req, res) => {
   res.json(result);
 });
 
+
+/**
+ * LOGIN
+ */
 app.post('/login', (req, res) => {
   const { fdx_login } = req.body;
   let result = {
