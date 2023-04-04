@@ -113,6 +113,7 @@ app.get('/pickup', (req, res) => {
 
 /**
  * PICKUP (POST)
+ *
  * new property in result object called actionRecommendation with default value "VA"
  * new property in result object called isLoggedIn with default value false
  * if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
@@ -126,7 +127,6 @@ app.post('/pickup', (req, res) => {
   let result = {
     accountType: 'individual',
     actionRecommendation: 'VA',
-    isLoggedIn: false,
     returnCode: 0,
     shipmentAddressTo: 'Fred Smithstraat 88, Rotterdam, Netherlands',
     shipmentAddressFrom: '',
@@ -154,14 +154,6 @@ app.post('/pickup', (req, res) => {
       result.shipmentAmount = 1;
       result.shipmentType = 'dangerous';
     }
-  }
-
-  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
-    result.isLoggedIn = true;
-    result.userDetails = {
-      firstName: 'John',
-      lastName: 'Doe',
-    };
   }
 
   if (to_address) {
