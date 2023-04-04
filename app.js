@@ -50,10 +50,12 @@ app.get('/', (req, res) => {
 });
 app.post('/confirmpickup', (req, res) => {
   const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount,fdx_login } = req.body;
+  let pickupDate = generatePickupDate();
+  let shipmentNumber= generateShipmentNumber();
   const result = {
     returnCode: 0,
-    shipmentNumber: generateShipmentNumber(),
-    pickupDate: generatePickupDate(),
+    shipmentNumber: shipmentNumber,
+    pickupDate: pickupDate,
     confirmationMessage: `Your pickup is scheduled for tracking number ${trackingNumber}, origin shipping address ${shipmentAddressFrom} on its way to ${shipmentAddressTo}. It will be picked up on ${pickupDate} and your shipment number is ${shipmentNumber}. Thanks for working with us.`,
     actionRecommendation: 'VA',
     isLoggedIn: false,
