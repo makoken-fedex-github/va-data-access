@@ -205,7 +205,7 @@ app.post('/confirmpickup', (req, res) => {
   let shipmentNumber= generateShipmentNumber();
   const result = {
     actionRecommendation: 'VA',
-    trackingNr: trackingNumber
+    trackingNr: trackingNumber,
     addressFrom: shipmentAddressFrom,
     addressTo: shipmentAddressTo,
     amount: shipmentAmount,
