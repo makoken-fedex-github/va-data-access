@@ -128,8 +128,8 @@ app.post('/pickup', (req, res) => {
     accountType: 'individual',
     actionRecommendation: 'VA',
     returnCode: 0,
-    shipmentAddressTo: 'Fred Smithstraat 88, Rotterdam, Netherlands',
-    shipmentAddressFrom: '',
+    shipmentAddressTo: '',
+    shipmentAddressFrom: 'Rotterdam',
     shipmentAmount: 0, // amount of packages
     shipmentPostalCode: '1000AA',
     shipmentType: 'international',
