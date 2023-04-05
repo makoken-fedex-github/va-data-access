@@ -140,8 +140,8 @@ app.post('/pickup', (req, res) => {
     accountType: 'individual',
     actionRecommendation: 'VA',
     returnCode: 0,
-    shipmentAddressTo: '',
-    shipmentAddressFrom: '',
+    shipmentAddressTo: shipmentAddresTo ? shipmentAddresTo : '',
+    shipmentAddressFrom: shipmentAddressFrom ? shipmentAddressFrom : '',
     shipmentAmount: 0, // amount of packages
     shipmentPostalCode: '1000AA',
     shipmentType: 'international',
@@ -157,13 +157,14 @@ app.post('/pickup', (req, res) => {
 
     } else if (trackingNumber.startsWith('200')) {
       result.accountType = 'business';
-      result.shipmentAmount = 1;
+      result.shipmentAmount = 2;
       result.shipmentPostalCode = '2132LS';
       result.shipmentType = 'international';
 
     } else if (trackingNumber.startsWith('900')) {
       result.actionRecommendation = 'HumanOperator';
       result.shipmentAmount = 1;
+      result.shipmentPostalCode = '8888XX';
       result.shipmentType = 'dangerous';
     }
   }
@@ -209,7 +210,7 @@ app.post('/confirmpickup', (req, res) => {
     addressFrom: shipmentAddressFrom,
     addressTo: shipmentAddressTo,
     amount: shipmentAmount,
-    confirmationMessage: `Great news! Your shipment (${trackingNumber}) is scheduled for pickup on ${pickupDate} in ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Check your email inbox to confirm or change pickup details.`,
+    confirmationMessage: `🚚 Great news! Your shipment (${trackingNumber}), consisting of ${shipmentAmount} packages is scheduled for pickup on ${pickupDate} in ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Please check your email inbox to confirm or change pickup details.`,
     pickupDate: pickupDate,
     returnCode: 0,
     shipmentNumber: shipmentNumber,
