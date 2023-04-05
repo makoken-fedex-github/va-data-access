@@ -271,15 +271,20 @@ app.post('/confirmpickup', (req, res) => {
   let shipmentNumber= generateShipmentNumber();
   const confirmationMessage = `🚚 Great news! Your shipment (${trackingNumber}), consisting of ${shipmentAmount} packages is scheduled for pickup on ${pickupDate} in ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Please check your email inbox to confirm or change pickup details.`;
   const confirmationEmail =
-    `🚚 Thanks for scheduling a pickup with us.<br/><br/>
-    <strong>Pick-up date</strong>: ${pickupDate}<br/>
-    ℹ️ <i> We will inform you of an estimated pickup time 1 day beforehand</i><br/>
-    <strong>Tracking number</strong>: (${trackingNumber})<br/>
-    <strong>Amount of packages</strong>: ${shipmentAmount}<br/>
-    <strong>Pickup address</strong>: ${shipmentAddressFrom}<br/>
-    <strong>Address</strong>: ${shipmentAddressTo}<br/><br/>
-    <a href="https://fedex.com/en-gb/customer-support.hml">click here to confirm your pickup.</a>`
-  const result = {
+    `<h1>🚚 Thanks for scheduling a pickup with us.</h1>
+    <p>ℹ️ <i> We will inform you of an estimated pickup time window 1 day beforehand</i></p>
+    <p>
+      <strong>Pick-up reference number</strong> ${shipmentNumber}<br/>
+      <strong>Pick-up date</strong>: ${pickupDate}<br/>
+      <strong>Tracking number</strong>: (${trackingNumber})<br/>
+      <strong>Amount of packages</strong>: ${shipmentAmount}<br/>
+      <strong>Pickup address</strong>: ${shipmentAddressFrom}<br/>
+      <strong>Address</strong>: ${shipmentAddressTo}
+    </p>
+    <p>
+      <a href="https://fedex.com/en-gb/customer-support.html"><strong>Click here</strong> to confirm your pickup.</a>
+    </p>`
+    const result = {
     actionRecommendation: 'VA',
     trackingNr: trackingNumber,
     addressFrom: shipmentAddressFrom,
