@@ -16,12 +16,12 @@ function sendTeamsNotification(subject,body){
       "@type": "MessageCard",
       "@context": "http://schema.org/extensions",
       "themeColor": "0072C6",
-      "title": "Your Pickup is confirmed",
-      "text":"Your Pickup is confirmed",
-      "summary": "Your pickup is confirmed for your package.",
+      "title": subject,
+      "text":body,
+      "summary": body,
       "sections": [
         {
-          "activityTitle": "Pickup Confirmation",
+          "activityTitle": subject,
           "activitySubtitle": "Sent by DCC - FedEx",
           "activityImage": "https://www.fedex.com/content/dam/fedex-com/logos/logo.png"
         }
