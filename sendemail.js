@@ -8,11 +8,11 @@ apiKey.apiKey = process.env.API_KEY
 const tranEmailApi = new Sib.TransactionalEmailsApi()
 const sender = {
     email: 'makoken.parkmobile@gmail.com',
-    name: 'Test Email',
+    name: 'Test Email 222 Bram',
 }
 const receivers = [
     {
-        email: 'ali.koeken.osv@fedex.com',
+        email: 'makoken.parkmobile@gmail.com',
     },
 ]
 
