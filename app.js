@@ -2,8 +2,8 @@
 var nodemailer = require('nodemailer');
 const axios = require('axios');
 const Sib = require('sib-api-v3-sdk')
-const client = Sib.ApiClient.instanceconst 
-apiKey = client.authentications['api-key']
+const client = Sib.ApiClient.instance
+const apiKey = client.authentications['api-key']
 apiKey.apiKey = process.env.API_KEY
 const express = require('express');
 const app = express();
