@@ -4,6 +4,10 @@ const Sib = require('sib-api-v3-sdk')
 const client = Sib.ApiClient.instanceconst 
 apiKey = client.authentications['api-key']
 apiKey.apiKey = process.env.API_KEY
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8ed0577 (notification updates.)
 const express = require('express');
 const app = express();
 function sendTeamsNotification(subject,body){
@@ -67,9 +71,76 @@ function sendNotificationEmail(subject,body){
   }
 }
 
+<<<<<<< HEAD
 /**
  * GENERATE SHIPMENT NUMBER
  */
+=======
+function sendTeamsNotification(subject,body){
+  try{
+      // Replace <webhook-url> with the actual webhook URL provided by Teams
+    const webhookUrl = 'https://myfedex.webhook.office.com/webhookb2/9955e2de-3d21-437c-99c7-0b15657457c1@b945c813-dce6-41f8-8457-5a12c2fe15bf/IncomingWebhook/ad3b52249e764827952bd8281193b6ce/50fe584c-09e5-4b10-b92b-ff8d56c63bcd';
+
+    // Define the message payload
+    const payload = {
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "themeColor": "0072C6",
+      "title": "Your Pickup is confirmed",
+      "text":"Your Pickup is confirmed",
+      "summary": "Your pickup is confirmed for your package.",
+      "sections": [
+        {
+          "activityTitle": "Pickup Confirmation",
+          "activitySubtitle": "Sent by DCC - FedEx",
+          "activityImage": "https://www.fedex.com/content/dam/fedex-com/logos/logo.png"
+        }
+      ]
+    };
+    // Send a POST request to the webhook URL with the message payload
+    axios.post(webhookUrl, payload)
+      .then(response => {
+        console.log('Message sent:', response.data);
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+      });
+  }catch(ex){
+    console.error("something went wrong when sending teams notifications..."+ex.message);
+  }
+}
+
+function sendNotificationEmail(subject,body){
+  try {
+  const client = Sib.ApiClient.instance
+  const apiKey = client.authentications['api-key']
+  apiKey.apiKey = process.env.API_KEY
+  const tranEmailApi = new Sib.TransactionalEmailsApi()
+  const sender = {
+      email: 'makoken.parkmobile@gmail.com',
+      name: 'Test Email',
+  }
+  const receivers = [
+      {
+          email: 'ali.koeken.osv@fedex.com,makoken+va+notification@gmail.com',
+      },
+  ]
+
+  tranEmailApi
+      .sendTransacEmail({
+          sender,
+          to: receivers,
+          subject: subject,
+          textContent: body
+      })
+      .then(console.log)
+      .catch(console.log)
+  } catch (error) {
+    console.error("something went wrong when sending email notifications..."+ex.message);
+  }
+}
+
+>>>>>>> 8ed0577 (notification updates.)
 function generateShipmentNumber() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let shipmentNumber = '';
@@ -127,7 +198,127 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
+<<<<<<< HEAD
 
+=======
+app.post('/confirmpickup', (req, res) => {
+  const { trackingNumber, shipmentAddressFrom, shipmentAddressTo, shipmentAmount,fdx_login } = req.body;
+  let pickupDate = generatePickupDate();
+  let shipmentNumber= generateShipmentNumber();
+  const confirmationMessage = `Your pickup is scheduled for tracking number ${trackingNumber}, origin shipping address ${shipmentAddressFrom} on its way to ${shipmentAddressTo}. It will be picked up on ${pickupDate} and your shipment number is ${shipmentNumber}. Thanks for working with us.`;
+  const result = {
+    returnCode: 0,
+    shipmentNumber: shipmentNumber,
+    pickupDate: pickupDate,
+    confirmationMessage: confirmationMessage,
+    actionRecommendation: 'VA',
+    isLoggedIn: false,
+  };
+
+  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      firstName: 'John',
+      lastName: 'Doe',
+    };
+  }
+  const notificationSubject =  `Pickup Confirmation for tracking number ${trackingNumber}`;
+  sendNotificationEmail(notificationSubject,confirmationMessage)
+  sendTeamsNotification(notificationSubject,confirmationMessage)
+
+  res.json(result);
+});
+
+app.get('/pickup', (req, res) => {
+  let cookies = req.headers.cookie ? req.headers.cookie.substring(0, 50) : "No cookies present";
+  let result = {
+    accountType: "individual", // options: ["individual", "business"]
+    isLoggedIn: true, // boolean
+    returnCode: 0,
+    shipmentPostalCode: "1000AA", // options: Dutch zip codes (regex: ^\d{4}[A-Za-z]{2}$ )
+    shipmentType: "international", // eligible for pickup: ["domestic", "return", "international"]. uneligible: ["freight", "dangerous"]
+    cookies: cookies // cookies object or "No cookies present"
+  };
+  res.setHeader('Content-Type', 'application/json');
+  res.json(result);
+});
+/*
+* new property in result object called actionRecommendation with default value "VA"
+* new property in result object called isLoggedIn with default value false
+* if the tracking_number starts with "100", then set result.shipmentType to domestic and result.shipmentPostalCode to "3012AM"
+* if the tracking_number starts with "200", then set result.shipmentType to international and result.shipmentPostalCode to "2132LS"
+* if the tracking_number starts with "900", then set result.shipmentType to dangerous and set result.actionRecommendation to "HumanOperator"
+* if fdx_login contains a value and starts with "ssodrt-" then set result.isLoggedIn to true and introduce a new complex object type under result object called userDetails. Set result.userDetails.firstName to "John" and result.userDetails.lastName to "Doe".
+*/
+app.post('/pickup', (req, res) => {
+  console.log("req.body is::: "+req.body);
+  const { tracking_number, fdx_login, from_address, to_address, weight } = req.body;
+  let result = {
+    accountType: 'individual',
+    actionRecommendation: 'VA',
+    isLoggedIn: false,
+    returnCode: 0,
+    shipmentAddressTo: 'Fred Smithstraat 88, Rotterdam, Netherlands',
+    shipmentAddressFrom: '',
+    shipmentAmount: 0, // amount of packages
+    shipmentPostalCode: '1000AA',
+    shipmentType: 'international',
+  };
+
+  if (tracking_number) {
+    if (tracking_number.startsWith('100')) {
+      result.shipmentAddressTo = 'Calgary';
+      result.shipmentAmount = 3;
+      result.shipmentInstructions = 'Use video doorbell on the left' // not functional yet in Mix
+      result.shipmentPostalCode = '3012AM';
+      result.shipmentType = 'domestic';
+
+    } else if (tracking_number.startsWith('200')) {
+      result.accountType = 'business';
+      result.shipmentAmount = 1;
+      result.shipmentPostalCode = '2132LS';
+      result.shipmentType = 'international';
+
+    } else if (tracking_number.startsWith('900')) {
+      result.actionRecommendation = 'HumanOperator';
+      result.shipmentAmount = 1;
+      result.shipmentType = 'dangerous';
+    }
+  }
+
+  if (fdx_login && fdx_login.startsWith('ssodrt-')) {
+    result.isLoggedIn = true;
+    result.userDetails = {
+      firstName: 'John',
+      lastName: 'Doe',
+    };
+  }
+
+  if (to_address) {
+    result.to_address_verify = to_address + "--received";
+  }else{
+    result.to_address_verify = "no-to-address--received";
+  }
+
+  if (weight) {
+    result.weight_verify = weight + "--received. request body everything-->>>"+JSON.stringify(req.body);
+  }else{
+    result.weight_verify = "no-to-weight_verify--received....request body everything-->>>"+JSON.stringify(req.body);
+  }
+
+  if (from_address) {
+    result.from_address_verify = from_address + "--received";
+    console.log("sending email... from address is set. "+ from_address);
+
+    //sendEmail("Nuance Mix - Schedule Pickup", "response data is "+JSON.stringify(result));
+  }else{
+    result.from_address_verify = "no-from-address--received";
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  res.json(result);
+});
+>>>>>>> 8ed0577 (notification updates.)
 
 /**
  * LOGIN
