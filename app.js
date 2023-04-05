@@ -205,7 +205,7 @@ app.post('/pickup', (req, res) => {
     accountType: 'individual',
     actionRecommendation: 'VA',
     returnCode: 0,
-    shipmentAddressTo: shipmentAddresTo ? shipmentAddressTo : '',
+    shipmentAddressTo: shipmentAddressTo ? shipmentAddresssTo : '',
     shipmentAddressFrom: shipmentAddressFrom ? shipmentAddressFrom : '',
     shipmentAmount: 0, // amount of packages
     shipmentPostalCode: '1000AA',
