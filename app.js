@@ -47,7 +47,7 @@ function sendNotificationEmail(subject,body){
   const tranEmailApi = new Sib.TransactionalEmailsApi()
   const sender = {
       email: 'makoken.parkmobile@gmail.com',
-      name: 'Test Email',
+      name: 'FedEx Virtual Assistant',
   }
   const receivers = [
       {

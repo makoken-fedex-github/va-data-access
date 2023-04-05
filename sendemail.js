@@ -12,7 +12,7 @@ const sender = {
 }
 const receivers = [
     {
-        email: 'makoken.parkmobile@gmail.com',
+        email: 'acwillemse@gmail.com',
     },
 ]
 
