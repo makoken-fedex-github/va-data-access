@@ -97,11 +97,13 @@ function sendNotificationEmail (subject, body) {
 async function generateShipmentNumber() {
   const shipmentNumber = await axios.get(baseUrl+'/generate-shipment-number')
   console.log(`Generated shipment number: ${shipmentNumber.data}`)
+  return shipmentNumber;
 
 }
 async function generatePickupDate() {
   const pickupDate = await axios.get(baseUrl+'/generate-pickup-date')
   console.log(`Generated pickup date: ${pickupDate.data}`)
+  return pickupDate;
 }
 // /**
 //  * GENERATE SHIPMENT NUMBER
