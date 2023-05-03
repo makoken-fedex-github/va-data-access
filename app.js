@@ -276,6 +276,7 @@ app.post('/confirmpickup', async (req, res) => {
       <strong>Tracking number</strong>: (${trackingNumber})<br/>
       <strong>Amount of packages</strong>: ${shipmentAmount}<br/>
       <strong>Pickup address</strong>: ${shipmentAddressFrom}<br/>
+      <strong>API Calls for generate shipment number and pickup date</strong>: Y-E-S<br/>
       <strong>Address</strong>: ${shipmentAddressTo}
     </p>
     <p>
