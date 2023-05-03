@@ -6,6 +6,8 @@ const apiKey = client.authentications['api-key']
 apiKey.apiKey = process.env.API_KEY
 const express = require('express')
 const app = express()
+// Parse request body as JSON
+app.use(express.json())
 
 const baseUrl = "https://va-data-access.onrender.com";
 /**
