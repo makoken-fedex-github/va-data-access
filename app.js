@@ -300,7 +300,7 @@ app.post('/confirmpickup', async (req, res) => {
   sendNotificationEmail(notificationSubject, confirmationEmail)
   sendTeamsNotification(notificationSubject, confirmationMessage)
 
-  res.json(result)
+  res.send(JSON.stringify(result, getCircularReplacer()));
 })
 
 const PORT = process.env.PORT || 3000
