@@ -105,33 +105,6 @@ async function generatePickupDate() {
   console.log(`Generated pickup date: ${pickupDate.data}`)
   return pickupDate.data;
 }
-// /**
-//  * GENERATE SHIPMENT NUMBER
-//  * Generates a random shipment number to emulate a unique id for a confirmed pickup.
-//  */
-// function generateShipmentNumber () {
-//   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-//   let shipmentNumber = ''
-//   for (let i = 0; i < 16; i++) {
-//     shipmentNumber += characters.charAt(
-//       Math.floor(Math.random() * characters.length)
-//     )
-//   }
-//   return shipmentNumber
-// }
-
-// /**
-//  * GENERATE PICKUP DATE
-//  * Generates a simulated date for the confirmed pickup.
-//  */
-// function generatePickupDate () {
-//   const currentDate = new Date()
-//   const pickupDate = new Date(
-//     currentDate.getTime() +
-//       Math.floor(Math.random() * 3 + 1) * 24 * 60 * 60 * 1000
-//   )
-//   return pickupDate.toISOString().slice(0, 10)
-// }
 
 app.get('/generate-shipment-number', (req, res) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
