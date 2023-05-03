@@ -100,7 +100,7 @@ async function generateShipmentNumber() {
 
 }
 async function generatePickupDate() {
-  const pickupDate = await axios.get(baseUrl+'generate-pickup-date')
+  const pickupDate = await axios.get(baseUrl+'/generate-pickup-date')
   console.log(`Generated pickup date: ${pickupDate.data}`)
 }
 // /**
