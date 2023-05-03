@@ -258,15 +258,15 @@ app.post('/pickup', (req, res) => {
  * CONFIRM PICKUP
  * Pickup confirmation, processes the pickup data into a sentence.
  */
-app.post('/confirmpickup', (req, res) => {
+app.post('/confirmpickup', async (req, res) => {
   const {
     trackingNumber,
     shipmentAddressFrom,
     shipmentAddressTo,
     shipmentAmount
   } = req.body
-  let pickupDate = generatePickupDate()
-  let shipmentNumber = generateShipmentNumber()
+  let pickupDate = await generatePickupDate()
+  let shipmentNumber = await generateShipmentNumber()
   const confirmationMessage = `🚚 Great news! Your shipment (${trackingNumber}), consisting of ${shipmentAmount} packages is scheduled for pickup on ${pickupDate} in ${shipmentAddressFrom} and will be sent to ${shipmentAddressTo}. Your pickup reference is ${shipmentNumber}. Please check your email inbox to confirm or change pickup details.`
   const confirmationEmail = `<h1>🚚 Thanks for scheduling a pickup with us.</h1>
     <p>ℹ️ <i> We will inform you of an estimated pickup time window 1 day beforehand</i></p>
