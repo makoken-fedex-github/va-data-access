@@ -7,6 +7,7 @@ apiKey.apiKey = process.env.API_KEY
 const express = require('express')
 const app = express()
 
+const baseUrl = "https://va-data-access.onrender.com";
 /**
  * SEND TEAMS NOTIFICATION
  * Sets the message template and sends the teams notification of a confirmed pickup.
@@ -91,11 +92,44 @@ function sendNotificationEmail (subject, body) {
   }
 }
 
-/**
- * GENERATE SHIPMENT NUMBER
- * Generates a random shipment number to emulate a unique id for a confirmed pickup.
- */
-function generateShipmentNumber () {
+async function generateShipmentNumber() {
+  const shipmentNumber = await axios.get(baseUrl+'/generate-shipment-number')
+  console.log(`Generated shipment number: ${shipmentNumber.data}`)
+
+}
+async function generatePickupDate() {
+  const pickupDate = await axios.get(baseUrl+'generate-pickup-date')
+  console.log(`Generated pickup date: ${pickupDate.data}`)
+}
+// /**
+//  * GENERATE SHIPMENT NUMBER
+//  * Generates a random shipment number to emulate a unique id for a confirmed pickup.
+//  */
+// function generateShipmentNumber () {
+//   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+//   let shipmentNumber = ''
+//   for (let i = 0; i < 16; i++) {
+//     shipmentNumber += characters.charAt(
+//       Math.floor(Math.random() * characters.length)
+//     )
+//   }
+//   return shipmentNumber
+// }
+
+// /**
+//  * GENERATE PICKUP DATE
+//  * Generates a simulated date for the confirmed pickup.
+//  */
+// function generatePickupDate () {
+//   const currentDate = new Date()
+//   const pickupDate = new Date(
+//     currentDate.getTime() +
+//       Math.floor(Math.random() * 3 + 1) * 24 * 60 * 60 * 1000
+//   )
+//   return pickupDate.toISOString().slice(0, 10)
+// }
+
+app.get('/generate-shipment-number', (req, res) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   let shipmentNumber = ''
   for (let i = 0; i < 16; i++) {
@@ -103,21 +137,21 @@ function generateShipmentNumber () {
       Math.floor(Math.random() * characters.length)
     )
   }
-  return shipmentNumber
-}
+  res.send(shipmentNumber)
+})
 
 /**
- * GENERATE PICKUP DATE
+ * ENDPOINT: /generate-pickup-date
  * Generates a simulated date for the confirmed pickup.
  */
-function generatePickupDate () {
+app.get('/generate-pickup-date', (req, res) => {
   const currentDate = new Date()
   const pickupDate = new Date(
     currentDate.getTime() +
       Math.floor(Math.random() * 3 + 1) * 24 * 60 * 60 * 1000
   )
-  return pickupDate.toISOString().slice(0, 10)
-}
+  res.send(pickupDate.toISOString().slice(0, 10))
+})
 
 
 /**
