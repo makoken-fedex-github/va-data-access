@@ -97,7 +97,7 @@ function sendNotificationEmail (subject, body) {
 async function generateShipmentNumber() {
   const shipmentNumber = await axios.get(baseUrl+'/generate-shipment-number')
   console.log(`Generated shipment number: ${shipmentNumber.data}`)
-  return shipmentNumber;
+  return shipmentNumber.data;
 
 }
 async function generatePickupDate() {
@@ -300,7 +300,7 @@ app.post('/confirmpickup', async (req, res) => {
   sendNotificationEmail(notificationSubject, confirmationEmail)
   sendTeamsNotification(notificationSubject, confirmationMessage)
 
-  res.send(JSON.stringify(result, getCircularReplacer()));
+  res.json(result)
 })
 
 const PORT = process.env.PORT || 3000
