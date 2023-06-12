@@ -208,8 +208,10 @@ app.post('/pickup', (req, res) => {
 
   if (trackingNumber) {
     if (trackingNumber.startsWith('500500')) {
+      console.log("Returning 500 response for tracking number "+trackingNumber);
       return res.status(500).json({ error: 'Internal Server Error' });
     } else if (trackingNumber.startsWith('400400')) {
+      console.log("Returning 400 response for tracking number "+trackingNumber);
       return res.status(400).json({ error: 'Bad Request' });
     } else if (trackingNumber.startsWith('100')) {
       result.shipmentAddressFrom = 'Amsterdam';
