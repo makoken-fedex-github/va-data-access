@@ -193,41 +193,47 @@ app.post('/pickup', (req, res) => {
     shipmentAddressTo,
     shipmentWeight,
     fdx_login
-  } = req.body
+  } = req.body;
+  
   let result = {
     accountType: 'individual',
     actionRecommendation: 'VA',
     returnCode: 0,
-    shipmentAddressTo: shipmentAddressTo ? shipmentAddresssTo : '',
+    shipmentAddressTo: shipmentAddressTo ? shipmentAddressTo : '',
     shipmentAddressFrom: shipmentAddressFrom ? shipmentAddressFrom : '',
     shipmentAmount: 0, // amount of packages
     shipmentPostalCode: '1000AA',
     shipmentType: 'international'
-  }
+  };
 
   if (trackingNumber) {
-    if (trackingNumber.startsWith('100')) {
-      result.shipmentAddressFrom = 'Amsterdam'
-      result.shipmentAmount = 3
-      result.shipmentInstructions = 'Use video doorbell on the left' // not functional yet in Mix
-      result.shipmentPostalCode = '1051GM'
-      result.shipmentType = 'domestic'
+    if (trackingNumber === '500500500500') {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    } else if (trackingNumber === '400400400400') {
+      return res.status(400).json({ error: 'Bad Request' });
+    } else if (trackingNumber.startsWith('100')) {
+      result.shipmentAddressFrom = 'Amsterdam';
+      result.shipmentAmount = 3;
+      result.shipmentInstructions = 'Use video doorbell on the left'; // not functional yet in Mix
+      result.shipmentPostalCode = '1051GM';
+      result.shipmentType = 'domestic';
     } else if (trackingNumber.startsWith('200')) {
-      result.accountType = 'business'
-      result.shipmentAmount = 2
-      result.shipmentPostalCode = '2132LS'
-      result.shipmentType = 'international'
+      result.accountType = 'business';
+      result.shipmentAmount = 2;
+      result.shipmentPostalCode = '2132LS';
+      result.shipmentType = 'international';
     } else if (trackingNumber.startsWith('900')) {
-      result.actionRecommendation = 'HumanOperator'
-      result.shipmentAmount = 1
-      result.shipmentPostalCode = '8888XX'
-      result.shipmentType = 'dangerous'
+      result.actionRecommendation = 'HumanOperator';
+      result.shipmentAmount = 1;
+      result.shipmentPostalCode = '8888XX';
+      result.shipmentType = 'dangerous';
     }
   }
 
-  res.setHeader('Content-Type', 'application/json')
-  res.json(result)
-})
+  res.setHeader('Content-Type', 'application/json');
+  res.json(result);
+});
+
 
 /**
  * CONFIRM PICKUP
