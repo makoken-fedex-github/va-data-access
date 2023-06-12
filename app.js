@@ -75,7 +75,7 @@ function sendNotificationEmail (subject, body) {
     }
     const receivers = [
       {
-        email: 'acwillemse@gmail.com'
+        email: 'makoken.parkmobile@gmail.com'
       }
     ]
     tranEmailApi
